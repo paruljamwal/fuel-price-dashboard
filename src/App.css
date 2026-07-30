@@ -5,10 +5,79 @@
   justify-content: center;
   flex-grow: 1;
   padding: 48px 24px;
-  gap: 12px;
+  gap: 20px;
 }
 
-.app p {
-  max-width: 36rem;
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  text-align: left;
+}
+
+.brand-mark {
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+}
+
+.brand-wordmark {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+}
+
+.brand-name {
+  font-size: 2.25rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  color: var(--text-h);
+}
+
+.brand-product {
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--text-h);
+  opacity: 0.72;
+}
+
+.app > p {
+  max-width: 28rem;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  font-weight: 450;
   color: var(--text);
+}
+
+@media (max-width: 480px) {
+  .brand {
+    flex-direction: column;
+    text-align: center;
+    gap: 14px;
+  }
+
+  .brand-mark {
+    width: 56px;
+    height: 56px;
+  }
+
+  .brand-name {
+    font-size: 1.85rem;
+  }
+
+  .brand-product {
+    font-size: 1.2rem;
+  }
+
+  .brand-wordmark {
+    align-items: center;
+  }
 }
