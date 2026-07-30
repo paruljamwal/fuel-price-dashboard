@@ -3,16 +3,18 @@ import Papa from 'papaparse'
 import PageHeader from './components/PageHeader/PageHeader'
 import Section from './components/Section/Section'
 import retailFuelPricesCsv from './data/retail-fuel-prices.csv?raw'
+import { normalizeFuelData } from './utils/normalizeFuelData'
 import './App.css'
 
 function App() {
   useEffect(() => {
-    const result = Papa.parse(retailFuelPricesCsv, {
+    const result = Papa.parse<Record<string, string>>(retailFuelPricesCsv, {
       header: true,
       skipEmptyLines: true,
     })
 
-    console.log(result.data)
+    const normalizedData = normalizeFuelData(result.data)
+    console.log(normalizedData)
   }, [])
 
   return (
