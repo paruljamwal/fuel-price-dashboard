@@ -1,3 +1,4 @@
+import Section from './components/Section/Section'
 import './App.css'
 
 function App() {
@@ -37,19 +38,13 @@ function App() {
           </p>
         </header>
 
-        <section className="dashboard-section" aria-labelledby="filters-heading">
-          <h2 id="filters-heading" className="section-heading">
-            Filters
-          </h2>
+        <Section title="Filters">
           <div className="section-body" />
-        </section>
+        </Section>
 
-        <section className="dashboard-section" aria-labelledby="chart-heading">
-          <h2 id="chart-heading" className="section-heading">
-            Monthly Retail Selling Price
-          </h2>
+        <Section title="Monthly Retail Selling Price">
           <div className="section-body section-body-chart" />
-        </section>
+        </Section>
       </div>
     </main>
   )
