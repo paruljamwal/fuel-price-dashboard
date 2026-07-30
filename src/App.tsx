@@ -2,9 +2,10 @@ import './App.css'
 
 function App() {
   return (
-    <div>
-      <h1>Hello World</h1>
-    </div>
+    <main className="app">
+      <h1>Fuel Price Dashboard</h1>
+      <p>Monthly retail fuel price visualization across metro cities.</p>
+    </main>
   )
 }
 
