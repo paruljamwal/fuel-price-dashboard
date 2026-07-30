@@ -1,8 +1,20 @@
+import { useEffect } from 'react'
+import Papa from 'papaparse'
 import PageHeader from './components/PageHeader/PageHeader'
 import Section from './components/Section/Section'
+import retailFuelPricesCsv from './data/retail-fuel-prices.csv?raw'
 import './App.css'
 
 function App() {
+  useEffect(() => {
+    const result = Papa.parse(retailFuelPricesCsv, {
+      header: true,
+      skipEmptyLines: true,
+    })
+
+    console.log(result.data)
+  }, [])
+
   return (
     <main className="dashboard">
       <div className="dashboard-container">
