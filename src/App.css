@@ -1,30 +1,36 @@
-.app {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+.dashboard {
   flex-grow: 1;
-  padding: 48px 24px;
-  gap: 20px;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 18px;
+  padding: 40px 24px 64px;
   text-align: left;
 }
 
+.dashboard-container {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.page-header {
+  margin-bottom: 40px;
+}
+
+.page-title-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
 .brand-mark {
-  width: 64px;
-  height: 64px;
+  width: 56px;
+  height: 56px;
   flex-shrink: 0;
 }
 
-.brand-wordmark {
+.page-title {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
   margin: 0;
   font-size: inherit;
   font-weight: inherit;
@@ -32,16 +38,16 @@
   color: inherit;
 }
 
-.brand-name {
-  font-size: 2.25rem;
+.page-title-primary {
+  font-size: 2rem;
   font-weight: 700;
   letter-spacing: -0.04em;
-  line-height: 1.05;
+  line-height: 1.1;
   color: var(--text-h);
 }
 
-.brand-product {
-  font-size: 1.35rem;
+.page-title-secondary {
+  font-size: 1.2rem;
   font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 1.2;
@@ -49,35 +55,80 @@
   opacity: 0.72;
 }
 
-.app > p {
-  max-width: 28rem;
+.page-subtitle {
+  max-width: 36rem;
+  margin: 0;
   font-size: 1.05rem;
   line-height: 1.5;
-  font-weight: 450;
   color: var(--text);
 }
 
-@media (max-width: 480px) {
-  .brand {
-    flex-direction: column;
-    text-align: center;
-    gap: 14px;
+.dashboard-section {
+  margin-top: 32px;
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg);
+}
+
+.section-heading {
+  margin: 0 0 16px;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text-h);
+}
+
+.section-body {
+  min-height: 72px;
+}
+
+.section-body-chart {
+  min-height: 280px;
+}
+
+@media (max-width: 640px) {
+  .dashboard {
+    padding: 28px 16px 48px;
+  }
+
+  .page-header {
+    margin-bottom: 28px;
+  }
+
+  .page-title-group {
+    gap: 12px;
   }
 
   .brand-mark {
-    width: 56px;
-    height: 56px;
+    width: 48px;
+    height: 48px;
   }
 
-  .brand-name {
-    font-size: 1.85rem;
+  .page-title-primary {
+    font-size: 1.65rem;
   }
 
-  .brand-product {
-    font-size: 1.2rem;
+  .page-title-secondary {
+    font-size: 1.05rem;
   }
 
-  .brand-wordmark {
-    align-items: center;
+  .page-subtitle {
+    font-size: 0.98rem;
+  }
+
+  .dashboard-section {
+    margin-top: 20px;
+    padding: 18px;
+    border-radius: 10px;
+  }
+
+  .section-heading {
+    font-size: 1.05rem;
+    margin-bottom: 12px;
+  }
+
+  .section-body-chart {
+    min-height: 200px;
   }
 }
