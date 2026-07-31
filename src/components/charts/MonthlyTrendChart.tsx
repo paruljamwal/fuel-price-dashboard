@@ -4,12 +4,12 @@ import {
   Legend,
   Line,
   LineChart,
-  ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from 'recharts'
 import type { FuelPrice } from '../../types/fuel'
+import ChartContainer from './ChartContainer'
 
 type MonthlyTrendPoint = {
   month: string
@@ -93,59 +93,59 @@ function MonthlyTrendChart({ filteredData }: MonthlyTrendChartProps) {
 
   if (filteredData.length === 0) {
     return (
-      <div className="flex h-[320px] items-center justify-center text-[var(--text)] md:h-[400px]">
+      <div className="flex h-[320px] items-center justify-center text-slate-500 md:h-[400px]">
         No records available for the selected filters.
       </div>
     )
   }
 
   return (
-    <div className="h-[320px] w-full md:h-[400px]">
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart
-          data={chartData}
-          margin={{ top: 8, right: 16, left: 0, bottom: 8 }}
-        >
-          <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" />
-          <XAxis
-            dataKey="month"
-            tick={{ fill: 'var(--text)', fontSize: 12 }}
-            tickLine={false}
-            axisLine={{ stroke: 'var(--border)' }}
-          />
-          <YAxis
-            tick={{ fill: 'var(--text)', fontSize: 12 }}
-            tickLine={false}
-            axisLine={{ stroke: 'var(--border)' }}
-            width={48}
-          />
-          <Tooltip
-            formatter={(value) =>
-              typeof value === 'number' ? `₹${value.toFixed(2)}` : value
-            }
-          />
-          <Legend />
-          <Line
-            type="monotone"
-            dataKey="petrol"
-            name="Petrol"
-            stroke="var(--brand)"
-            strokeWidth={2}
-            dot={false}
-            activeDot={{ r: 4 }}
-          />
-          <Line
-            type="monotone"
-            dataKey="diesel"
-            name="Diesel"
-            stroke="var(--brand-accent)"
-            strokeWidth={2}
-            dot={false}
-            activeDot={{ r: 4 }}
-          />
-        </LineChart>
-      </ResponsiveContainer>
-    </div>
+    <ChartContainer>
+      <LineChart
+        responsive
+        data={chartData}
+        style={{ width: '100%', height: '100%' }}
+        margin={{ top: 8, right: 16, left: 0, bottom: 8 }}
+      >
+        <CartesianGrid stroke="#E5E4E7" strokeDasharray="3 3" />
+        <XAxis
+          dataKey="month"
+          tick={{ fill: '#4B5563', fontSize: 12 }}
+          tickLine={false}
+          axisLine={{ stroke: '#E5E4E7' }}
+        />
+        <YAxis
+          tick={{ fill: '#4B5563', fontSize: 12 }}
+          tickLine={false}
+          axisLine={{ stroke: '#E5E4E7' }}
+          width={48}
+        />
+        <Tooltip
+          formatter={(value) =>
+            typeof value === 'number' ? `₹${value.toFixed(2)}` : value
+          }
+        />
+        <Legend />
+        <Line
+          type="monotone"
+          dataKey="petrol"
+          name="Petrol"
+          stroke="#0F766E"
+          strokeWidth={2}
+          dot={false}
+          activeDot={{ r: 4 }}
+        />
+        <Line
+          type="monotone"
+          dataKey="diesel"
+          name="Diesel"
+          stroke="#F97316"
+          strokeWidth={2}
+          dot={false}
+          activeDot={{ r: 4 }}
+        />
+      </LineChart>
+    </ChartContainer>
   )
 }
 
