@@ -3,6 +3,7 @@ import Papa from 'papaparse'
 import Card from './components/Card/Card'
 import FilterBar from './components/FilterBar/FilterBar'
 import KpiCards from './components/KpiCards/KpiCards'
+import MetroCityBarChart from './components/charts/MetroCityBarChart'
 import MonthlyTrendChart from './components/charts/MonthlyTrendChart'
 import PageHeader from './components/PageHeader/PageHeader'
 import Section from './components/Section/Section'
@@ -85,6 +86,10 @@ function App() {
 
         <Card title="Monthly Retail Selling Price">
           <MonthlyTrendChart filteredData={filteredData} />
+        </Card>
+
+        <Card title="Fuel Price by Metro City">
+          <MetroCityBarChart filteredData={filteredData} />
         </Card>
       </div>
     </main>
