@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import Papa from 'papaparse'
+import Card from './components/Card/Card'
 import FilterBar from './components/FilterBar/FilterBar'
 import KpiCards from './components/KpiCards/KpiCards'
 import MonthlyTrendChart from './components/charts/MonthlyTrendChart'
@@ -82,9 +83,9 @@ function App() {
           <KpiCards filteredData={filteredData} />
         </Section>
 
-        <Section title="Monthly Retail Selling Price">
+        <Card title="Monthly Retail Selling Price">
           <MonthlyTrendChart filteredData={filteredData} />
-        </Section>
+        </Card>
       </div>
     </main>
   )

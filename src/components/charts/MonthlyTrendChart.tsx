@@ -93,14 +93,14 @@ function MonthlyTrendChart({ filteredData }: MonthlyTrendChartProps) {
 
   if (filteredData.length === 0) {
     return (
-      <div className="flex min-h-[280px] items-center justify-center text-[var(--text)]">
+      <div className="flex h-[320px] items-center justify-center text-[var(--text)] md:h-[400px]">
         No records available for the selected filters.
       </div>
     )
   }
 
   return (
-    <div className="h-[320px] w-full min-h-[280px]">
+    <div className="h-[320px] w-full md:h-[400px]">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={chartData}
