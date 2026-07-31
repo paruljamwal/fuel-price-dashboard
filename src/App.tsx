@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import Papa from 'papaparse'
 import FilterBar from './components/FilterBar/FilterBar'
+import KpiCards from './components/KpiCards/KpiCards'
 import PageHeader from './components/PageHeader/PageHeader'
 import Section from './components/Section/Section'
 import retailFuelPricesCsv from './data/retail-fuel-prices.csv?raw'
@@ -74,6 +75,10 @@ function App() {
             onCityChange={setSelectedCity}
             onReset={handleResetFilters}
           />
+        </Section>
+
+        <Section title="Key Metrics">
+          <KpiCards filteredData={filteredData} />
         </Section>
 
         <Section title="Monthly Retail Selling Price">
