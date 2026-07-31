@@ -4,21 +4,6 @@ import Button from '../Button/Button'
 import Select from '../Select/Select'
 import './FilterBar.css'
 
-const monthOptions = [
-  { value: 'january', label: 'January' },
-  { value: 'february', label: 'February' },
-  { value: 'march', label: 'March' },
-  { value: 'april', label: 'April' },
-  { value: 'may', label: 'May' },
-  { value: 'june', label: 'June' },
-  { value: 'july', label: 'July' },
-  { value: 'august', label: 'August' },
-  { value: 'september', label: 'September' },
-  { value: 'october', label: 'October' },
-  { value: 'november', label: 'November' },
-  { value: 'december', label: 'December' },
-]
-
 const fuelTypeOptions = [
   { value: 'petrol', label: 'Petrol' },
   { value: 'diesel', label: 'Diesel' },
@@ -30,7 +15,13 @@ const metroCityOptions = [
   { value: 'chennai', label: 'Chennai' },
 ]
 
+type SelectOption = {
+  value: string
+  label: string
+}
+
 type FilterBarProps = {
+  monthOptions: SelectOption[]
   selectedMonth: string
   selectedFuelType: string
   selectedCity: string
@@ -43,6 +34,7 @@ type FilterBarProps = {
 }
 
 function FilterBar({
+  monthOptions,
   selectedMonth,
   selectedFuelType,
   selectedCity,
@@ -90,7 +82,9 @@ function FilterBar({
         <Button variant="outline" onClick={handleReset} disabled={isExportingPdf}>
           <RotateCcw
             aria-hidden="true"
-            className={isResetSpinning ? 'filter-reset-icon is-spinning' : 'filter-reset-icon'}
+            className={
+              isResetSpinning ? 'filter-reset-icon is-spinning' : 'filter-reset-icon'
+            }
             onAnimationEnd={() => setIsResetSpinning(false)}
           />
           Reset

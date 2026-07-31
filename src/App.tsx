@@ -11,7 +11,7 @@ import PageHeader from './components/PageHeader/PageHeader'
 import Section from './components/Section/Section'
 import retailFuelPricesCsv from './data/retail-fuel-prices.csv?raw'
 import type { FuelPrice } from './types/fuel'
-import { buildChartContext } from './utils/buildChartContext'
+import { buildChartContext, parseFuelPeriod } from './utils/buildChartContext'
 import { buildDashboardSummary } from './utils/buildDashboardSummary'
 import { exportDashboardPdf } from './utils/exportDashboardPdf'
 import { normalizeFuelData } from './utils/normalizeFuelData'
@@ -42,11 +42,30 @@ function App() {
   const metroChartRef = useRef<HTMLElement>(null)
   const donutChartRef = useRef<HTMLElement>(null)
 
+  const monthOptions = useMemo(() => {
+    const months = new Map<string, { year: number | null; monthIndex: number }>()
+
+    for (const row of fuelData) {
+      const month = row.month.trim()
+      if (!month || months.has(month)) continue
+
+      const { year, monthIndex } = parseFuelPeriod(row.month, row.calendarDay)
+      months.set(month, { year, monthIndex })
+    }
+
+    return [...months.entries()]
+      .sort(([, a], [, b]) => {
+        const yearDiff = (b.year ?? 0) - (a.year ?? 0)
+        if (yearDiff !== 0) return yearDiff
+        return b.monthIndex - a.monthIndex
+      })
+      .map(([month]) => ({ value: month, label: month }))
+  }, [fuelData])
+
   const filteredData = useMemo(() => {
     return fuelData.filter((row) => {
       const matchesMonth =
-        !selectedMonth ||
-        row.month.toLowerCase().includes(selectedMonth.toLowerCase())
+        !selectedMonth || row.month.trim() === selectedMonth
 
       const matchesFuelType =
         !selectedFuelType ||
@@ -103,7 +122,7 @@ function App() {
 
       await exportDashboardPdf({
         filters: {
-          month: toTitleCase(selectedMonth),
+          month: selectedMonth || 'All',
           fuelType: toTitleCase(selectedFuelType),
           metroCity: toTitleCase(selectedCity),
         },
@@ -151,6 +170,7 @@ function App() {
 
         <Section title="Filters">
           <FilterBar
+            monthOptions={monthOptions}
             selectedMonth={selectedMonth}
             selectedFuelType={selectedFuelType}
             selectedCity={selectedCity}

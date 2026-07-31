@@ -1,27 +1,20 @@
 .filter-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 16px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  gap: 16px 16px;
+  align-items: end;
 }
 
 .filter-fields {
-  display: flex;
-  flex: 1 1 auto;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  gap: 16px;
+  display: contents;
 }
 
 .filter-actions {
   display: flex;
-  flex: 0 0 auto;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
-  justify-content: flex-end;
-  gap: 12px;
-  margin-left: auto;
+  gap: 10px;
+  padding-bottom: 0;
 }
 
 .filter-reset-icon.is-spinning {
@@ -29,7 +22,7 @@
 }
 
 .filter-export-pdf {
-  min-width: 148px;
+  min-width: 120px;
 }
 
 .filter-export-spinner {
@@ -56,21 +49,25 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 960px) {
   .filter-bar {
-    gap: 12px;
-  }
-
-  .filter-fields {
-    width: 100%;
-    gap: 12px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .filter-actions {
-    width: 100%;
-    margin-left: 0;
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 640px) {
+  .filter-bar {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .filter-actions {
     flex-direction: column;
     align-items: stretch;
-    gap: 12px;
   }
 }
