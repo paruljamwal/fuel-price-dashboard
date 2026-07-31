@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import Papa from 'papaparse'
 import { toast } from 'sonner'
 import Card from './components/Card/Card'
@@ -83,10 +83,6 @@ function App() {
     () => buildChartContext(filteredData),
     [filteredData],
   )
-
-  useEffect(() => {
-    console.log(filteredData)
-  }, [filteredData])
 
   const handleResetFilters = () => {
     setSelectedMonth('')
