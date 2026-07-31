@@ -22,7 +22,8 @@
     "react-countup": "^6.5.3",
     "react-dom": "^19.2.8",
     "react-is": "^19.2.8",
-    "recharts": "^3.10.1"
+    "recharts": "^3.10.1",
+    "sonner": "^2.0.7"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

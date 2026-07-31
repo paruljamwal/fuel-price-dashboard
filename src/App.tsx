@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Papa from 'papaparse'
+import { toast } from 'sonner'
 import Card from './components/Card/Card'
 import FilterBar from './components/FilterBar/FilterBar'
 import KpiCards from './components/KpiCards/KpiCards'
@@ -66,6 +67,11 @@ function App() {
     setSelectedMonth('')
     setSelectedFuelType('')
     setSelectedCity('')
+
+    toast.success('Filters Reset', {
+      id: 'filters-reset',
+      description: 'All filters have been cleared successfully.',
+    })
   }
 
   const handleExportPdf = async () => {
@@ -81,7 +87,7 @@ function App() {
 
     setIsExportingPdf(true)
 
-    try {
+    const exportPromise = (async () => {
       // Let the button loading state paint before capture starts.
       await new Promise<void>((resolve) => {
         window.requestAnimationFrame(() => {
@@ -98,10 +104,29 @@ function App() {
         summary: buildDashboardSummary(filteredData),
         chartElements,
       })
+    })()
+
+    toast.promise(exportPromise, {
+      id: 'pdf-export',
+      loading: 'Generating PDF...',
+      success: {
+        message: 'PDF Exported',
+        description: 'Dashboard report downloaded successfully.',
+      },
+      error: {
+        message: 'Export Failed',
+        description:
+          'Unable to generate the dashboard PDF. Please try again.',
+      },
+      finally: () => {
+        setIsExportingPdf(false)
+      },
+    })
+
+    try {
+      await exportPromise
     } catch (error) {
       console.error('Failed to export dashboard PDF:', error)
-    } finally {
-      setIsExportingPdf(false)
     }
   }
 
