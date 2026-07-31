@@ -19,6 +19,7 @@
     "modern-screenshot": "^4.7.0",
     "papaparse": "^5.5.4",
     "react": "^19.2.8",
+    "react-countup": "^6.5.3",
     "react-dom": "^19.2.8",
     "react-is": "^19.2.8",
     "recharts": "^3.10.1"
@@ -40,5 +41,8 @@
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.65.0",
     "vite": "^8.2.0"
+  },
+  "resolutions": {
+    "countup.js": "file:vendor/countup.js-2.10.1-clean.tgz"
   }
 }

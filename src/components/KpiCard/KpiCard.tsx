@@ -1,6 +1,8 @@
+import type { ReactNode } from 'react'
+
 type KpiCardProps = {
   title: string
-  value: string
+  value: ReactNode
 }
 
 function KpiCard({ title, value }: KpiCardProps) {
