@@ -3,6 +3,7 @@ import Papa from 'papaparse'
 import Card from './components/Card/Card'
 import FilterBar from './components/FilterBar/FilterBar'
 import KpiCards from './components/KpiCards/KpiCards'
+import FuelTypeDonutChart from './components/charts/FuelTypeDonutChart'
 import MetroCityBarChart from './components/charts/MetroCityBarChart'
 import MonthlyTrendChart from './components/charts/MonthlyTrendChart'
 import PageHeader from './components/PageHeader/PageHeader'
@@ -90,6 +91,10 @@ function App() {
 
         <Card title="Fuel Price by Metro City">
           <MetroCityBarChart filteredData={filteredData} />
+        </Card>
+
+        <Card title="Fuel Type Distribution">
+          <FuelTypeDonutChart filteredData={filteredData} />
         </Card>
       </div>
     </main>
