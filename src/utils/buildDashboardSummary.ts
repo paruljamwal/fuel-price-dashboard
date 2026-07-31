@@ -11,6 +11,7 @@ function formatPrice(value: number): string {
   return `₹${value.toFixed(2)}`
 }
 
+// Calculate dashboard KPIs from filtered data for the PDF summary section.
 export function buildDashboardSummary(data: FuelPrice[]): DashboardSummary {
   if (data.length === 0) {
     return {

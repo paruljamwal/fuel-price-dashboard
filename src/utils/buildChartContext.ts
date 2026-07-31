@@ -36,6 +36,7 @@ function titleCase(value: string): string {
   return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase()
 }
 
+// Parse values like "June, 2025" into a sortable month name and year.
 export function parseFuelPeriod(month: string, calendarDay = ''): ParsedPeriod {
   const [rawName, rawYear] = month.split(',').map((part) => part.trim())
   const monthName = rawName || month.trim()
@@ -129,6 +130,7 @@ function buildPeriodLabel(data: FuelPrice[], years: number[]): string {
   return 'All Available Data'
 }
 
+// Build chart subtitles from the active filter scope (period, city, fuel type).
 export function buildChartContext(data: FuelPrice[]): ChartContext {
   if (data.length === 0) {
     return {

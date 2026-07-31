@@ -43,6 +43,7 @@ function buildCsvContent(data: FuelPrice[]): string {
   return [CSV_HEADERS.join(','), ...rows].join('\n')
 }
 
+// Trigger a CSV download of the filtered rows in the browser.
 export function exportFilteredFuelCsv(data: FuelPrice[]): void {
   if (data.length === 0) {
     return

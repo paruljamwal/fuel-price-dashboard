@@ -63,6 +63,7 @@ function MetroCityBarChart({
   filteredData,
   chartContext,
 }: MetroCityBarChartProps) {
+  // Memoize city averages so the bar chart only rebuilds when filters change.
   const chartData = useMemo(
     () => buildMetroCityChartData(filteredData),
     [filteredData],

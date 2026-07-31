@@ -11,6 +11,7 @@ import { buildDashboardSummary } from './utils/buildDashboardSummary'
 import { loadFuelData } from './utils/normalizeFuelData'
 import './App.css'
 
+// Lazy-load charts so they stay out of the initial JS bundle.
 const MonthlyTrendChart = lazy(
   () => import('./components/charts/MonthlyTrendChart'),
 )
@@ -44,6 +45,7 @@ function App() {
   const metroChartRef = useRef<HTMLElement>(null)
   const donutChartRef = useRef<HTMLElement>(null)
 
+  // Fetch and parse the CSV after first paint; ignore results if unmounted.
   useEffect(() => {
     let cancelled = false
 
@@ -68,6 +70,7 @@ function App() {
     }
   }, [])
 
+  // Build unique month options from the CSV and sort newest first.
   const monthOptions = useMemo(() => {
     const months = new Map<string, { year: number | null; monthIndex: number }>()
 
@@ -88,6 +91,7 @@ function App() {
       .map(([month]) => ({ value: month, label: month }))
   }, [fuelData])
 
+  // Apply selected filters to the dataset shared by KPIs, charts, and export.
   const filteredData = useMemo(() => {
     return fuelData.filter((row) => {
       const matchesMonth =
@@ -144,6 +148,7 @@ function App() {
         })
       })
 
+      // Load PDF libraries only when the user exports.
       const { exportDashboardPdf } = await import('./utils/exportDashboardPdf')
 
       await exportDashboardPdf({
@@ -157,6 +162,7 @@ function App() {
       })
     })()
 
+    // Show loading / success / error toasts while the PDF is generated.
     toast.promise(exportPromise, {
       id: 'pdf-export',
       loading: 'Generating PDF...',

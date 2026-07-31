@@ -13,6 +13,7 @@ function average(values: number[]): number {
   return Number((total / values.length).toFixed(2))
 }
 
+// Calculate average petrol and diesel prices for each metro city.
 export function buildMetroCityChartData(
   data: FuelPrice[],
 ): MetroCityChartPoint[] {

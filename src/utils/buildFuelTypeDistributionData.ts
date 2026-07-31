@@ -9,6 +9,7 @@ export type FuelTypeDistributionPoint = {
 const PETROL_COLOR = '#0F766E'
 const DIESEL_COLOR = '#F97316'
 
+// Count petrol vs diesel rows for the donut chart slices.
 export function buildFuelTypeDistributionData(
   data: FuelPrice[],
 ): FuelTypeDistributionPoint[] {

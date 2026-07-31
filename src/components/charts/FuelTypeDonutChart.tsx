@@ -8,6 +8,7 @@ type FuelTypeDonutChartProps = {
   filteredData: FuelPrice[]
 }
 
+// Format slice share for donut labels and tooltips.
 function formatPercent(value: number, total: number): string {
   if (total === 0) return '0%'
   return `${((value / total) * 100).toFixed(1)}%`

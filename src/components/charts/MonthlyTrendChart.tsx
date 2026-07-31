@@ -35,6 +35,7 @@ function average(values: number[]): number {
   return Number((total / values.length).toFixed(2))
 }
 
+// Prepare monthly averages for the petrol / diesel line chart.
 function buildMonthlyTrendData(
   data: FuelPrice[],
   isSingleYear: boolean,

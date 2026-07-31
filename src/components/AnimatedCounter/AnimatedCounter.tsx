@@ -22,6 +22,7 @@ function AnimatedCounter({
   decimals = 0,
   duration = 2,
 }: AnimatedCounterProps) {
+  // Animate KPI values from zero up to the current metric.
   return (
     <CountUp
       start={0}

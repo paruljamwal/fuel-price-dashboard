@@ -6,6 +6,7 @@ const FUEL_DATA_URL = '/data/retail-fuel-prices.csv'
 const RETAIL_SELLING_PRICE_KEY =
   'Retail Selling Price (Rsp) Of Petrol And Diesel (UOM:INR/L(IndianRupeesperLitre)), Scaling Factor:1'
 
+// Map raw CSV columns into a consistent FuelPrice shape.
 export function normalizeFuelData(
   rows: Record<string, string>[],
 ): FuelPrice[] {
@@ -24,6 +25,7 @@ export function normalizeFuelData(
   })
 }
 
+// Fetch the public CSV and normalize rows for the dashboard.
 export async function loadFuelData(
   url = FUEL_DATA_URL,
 ): Promise<FuelPrice[]> {

@@ -49,6 +49,7 @@ function Select({
             className="select-clear"
             aria-label={`Clear ${label}`}
             onClick={(event) => {
+              // Clear this filter without opening the native select menu.
               event.preventDefault()
               event.stopPropagation()
               onChange('')

@@ -15,6 +15,7 @@ type KpiMetrics = {
 }
 
 function KpiCards({ filteredData }: KpiCardsProps) {
+  // Memoize KPI calculations so cards do not recompute on unrelated renders.
   const metrics = useMemo<KpiMetrics>(() => {
     if (filteredData.length === 0) {
       return {

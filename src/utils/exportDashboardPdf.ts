@@ -19,13 +19,7 @@ const FOOTER_OFFSET_MM = 10
 const SECTION_GAP_MM = 6
 const IMAGE_GAP_MM = 8
 
-/**
- * Capture library note
- * --------------------
- * html2canvas cannot parse Tailwind v4 `oklch()` colors and throws during
- * export. modern-screenshot supports modern CSS color functions, so chart
- * capture uses it. jsPDF still builds the final PDF.
- */
+// Prefer modern-screenshot over html2canvas — Tailwind v4 oklch() breaks html2canvas.
 
 function formatGeneratedOn(date: Date): string {
   return date.toLocaleString(undefined, {
@@ -174,6 +168,7 @@ function addCanvasImage(
   return cursorY + IMAGE_GAP_MM
 }
 
+// Capture chart cards and assemble a multi-page PDF report.
 export async function exportDashboardPdf({
   filters,
   summary,
