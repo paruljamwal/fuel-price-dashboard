@@ -142,6 +142,19 @@ Purpose: show the distribution of fuel types.
 
 Question answered: "What proportion of the filtered dataset is Petrol vs Diesel?"
 
+### Chart library choice (Recharts vs Apache ECharts)
+
+The assignment brief suggested **Apache ECharts** (used directly, without `echarts-for-react`).
+
+This project uses **Recharts** instead, because:
+
+- It fits naturally with React component composition and props-driven updates
+- Line / bar / donut charts were straightforward to wire to the shared filtered dataset
+- Tooltips, legends, and responsive containers were enough for the dashboard scope
+- Delivery focused on filters, KPIs, UX, PDF export, and performance rather than low-level canvas chart setup
+
+Trade-off: less parity with the brief’s exact chart library, in exchange for faster iteration and clearer React architecture.
+
 ### UX Decisions
 
 Several small improvements were added to improve the user experience.
