@@ -27,25 +27,49 @@ const metroCityOptions = [
   { value: 'chennai', label: 'Chennai' },
 ]
 
-function FilterBar() {
+type FilterBarProps = {
+  selectedMonth: string
+  selectedFuelType: string
+  selectedCity: string
+  onMonthChange: (value: string) => void
+  onFuelTypeChange: (value: string) => void
+  onCityChange: (value: string) => void
+  onReset: () => void
+}
+
+function FilterBar({
+  selectedMonth,
+  selectedFuelType,
+  selectedCity,
+  onMonthChange,
+  onFuelTypeChange,
+  onCityChange,
+  onReset,
+}: FilterBarProps) {
   return (
     <div className="filter-bar">
       <Select
         label="Month"
         placeholder="Select month"
         options={monthOptions}
+        value={selectedMonth}
+        onChange={onMonthChange}
       />
       <Select
         label="Fuel Type"
         placeholder="Select fuel type"
         options={fuelTypeOptions}
+        value={selectedFuelType}
+        onChange={onFuelTypeChange}
       />
       <Select
         label="Metro City"
         placeholder="Select metro city"
         options={metroCityOptions}
+        value={selectedCity}
+        onChange={onCityChange}
       />
-      <button type="button" className="filter-reset" onClick={() => {}}>
+      <button type="button" className="filter-reset" onClick={onReset}>
         Reset Filters
       </button>
     </div>
