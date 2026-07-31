@@ -33,20 +33,79 @@ Filter by month, fuel type, and city · view KPIs and charts · export a PDF rep
 
 ---
 
+## Screenshots
+
+### Desktop
+
+![Dashboard home](images/home.png)
+
+![Filters](images/filters.png)
+
+![Filtered view](images/filtered.png)
+
+### Charts
+
+![Line and bar charts](images/charts-line-bar.png)
+
+![Bar and donut charts](images/charts-bar-donut.png)
+
+### Mobile
+
+![Mobile layout](images/mobile.png)
+
+![Mobile charts](images/mobile-charts.png)
+
+### PDF export
+
+![PDF report page 1](images/pdf-page1.png)
+
+![PDF report page 2](images/pdf-page2.png)
+
+### Toasts
+
+![PDF export success](images/toast-success.png)
+
+![PDF export error](images/toast-error.png)
+
+---
+
 ## Performance
 
 | | Before | After |
 | --- | ---: | ---: |
-| Lighthouse Performance | 64 | **99** |
+| Lighthouse Performance (desktop) | 64 | **94** |
+| Lighthouse Performance (mobile) | 68 | **99** |
 | Lighthouse SEO | 82 | **91** |
 | LCP (Chrome Performance) | **6.33s** | **1.62s** |
 | CLS | 0 | 0 |
 
-### LCP before
+### Lighthouse (desktop)
+
+**Before — Performance 64**
+
+![Lighthouse before desktop – Performance 64](images/lighthouse-before.png)
+
+**After — Performance 94**
+
+![Lighthouse after desktop – Performance 94](images/lighthouse-after.png)
+
+### Lighthouse (mobile)
+
+**Before — Performance 68**
+
+![Lighthouse before mobile – Performance 68](images/lighthouse-before-mobile.png)
+
+**After — Performance 99**
+
+![Lighthouse after mobile – Performance 99](images/lighthouse-after-mobile.png)
+
+### LCP (Chrome Performance panel)
+
+**Before — LCP 6.33s**
 
 ![LCP before – 6.33s](images/lcp-before.png)
 
-### LCP after
+**After — LCP 1.62s**
 
 ![LCP after – 1.62s](images/lcp-after.png)
 
