@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import Papa from 'papaparse'
+import FilterBar from './components/FilterBar/FilterBar'
 import PageHeader from './components/PageHeader/PageHeader'
 import Section from './components/Section/Section'
 import retailFuelPricesCsv from './data/retail-fuel-prices.csv?raw'
@@ -31,7 +32,7 @@ function App() {
         />
 
         <Section title="Filters">
-          <div className="section-body" />
+          <FilterBar />
         </Section>
 
         <Section title="Monthly Retail Selling Price">
