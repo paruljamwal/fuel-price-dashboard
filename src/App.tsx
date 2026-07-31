@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import Papa from 'papaparse'
 import FilterBar from './components/FilterBar/FilterBar'
 import KpiCards from './components/KpiCards/KpiCards'
+import MonthlyTrendChart from './components/charts/MonthlyTrendChart'
 import PageHeader from './components/PageHeader/PageHeader'
 import Section from './components/Section/Section'
 import retailFuelPricesCsv from './data/retail-fuel-prices.csv?raw'
@@ -82,7 +83,7 @@ function App() {
         </Section>
 
         <Section title="Monthly Retail Selling Price">
-          <div className="section-body section-body-chart" />
+          <MonthlyTrendChart filteredData={filteredData} />
         </Section>
       </div>
     </main>
