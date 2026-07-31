@@ -1,4 +1,7 @@
+import Papa from 'papaparse'
 import type { FuelPrice } from '../types/fuel'
+
+const FUEL_DATA_URL = '/data/retail-fuel-prices.csv'
 
 const RETAIL_SELLING_PRICE_KEY =
   'Retail Selling Price (Rsp) Of Petrol And Diesel (UOM:INR/L(IndianRupeesperLitre)), Scaling Factor:1'
@@ -19,4 +22,22 @@ export function normalizeFuelData(
       retailSellingPrice: Number.isFinite(price) ? price : 0,
     }
   })
+}
+
+export async function loadFuelData(
+  url = FUEL_DATA_URL,
+): Promise<FuelPrice[]> {
+  const response = await fetch(url)
+
+  if (!response.ok) {
+    throw new Error(`Failed to load fuel data (${response.status})`)
+  }
+
+  const csv = await response.text()
+  const result = Papa.parse<Record<string, string>>(csv, {
+    header: true,
+    skipEmptyLines: true,
+  })
+
+  return normalizeFuelData(result.data)
 }

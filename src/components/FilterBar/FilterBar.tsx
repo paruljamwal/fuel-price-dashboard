@@ -31,6 +31,7 @@ type FilterBarProps = {
   onReset: () => void
   onExportPdf: () => void
   isExportingPdf: boolean
+  isDataReady?: boolean
 }
 
 function FilterBar({
@@ -44,6 +45,7 @@ function FilterBar({
   onReset,
   onExportPdf,
   isExportingPdf,
+  isDataReady = true,
 }: FilterBarProps) {
   const [isResetSpinning, setIsResetSpinning] = useState(false)
 
@@ -92,7 +94,7 @@ function FilterBar({
         <Button
           variant="primary"
           onClick={onExportPdf}
-          disabled={isExportingPdf}
+          disabled={isExportingPdf || !isDataReady}
           className="filter-export-pdf"
         >
           {isExportingPdf ? (

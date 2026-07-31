@@ -10,8 +10,33 @@
   margin: 0 auto;
 }
 
+.dashboard-status {
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.dashboard-status-error {
+  color: #f87171;
+}
+
+.chart-fallback {
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
 @media (max-width: 640px) {
   .dashboard {
     padding: 28px 16px 48px;
+  }
+
+  .chart-fallback {
+    min-height: 200px;
   }
 }

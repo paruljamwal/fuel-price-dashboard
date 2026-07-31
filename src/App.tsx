@@ -1,29 +1,28 @@
-import { useMemo, useRef, useState } from 'react'
-import Papa from 'papaparse'
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import Card from './components/Card/Card'
 import FilterBar from './components/FilterBar/FilterBar'
 import KpiCards from './components/KpiCards/KpiCards'
-import FuelTypeDonutChart from './components/charts/FuelTypeDonutChart'
-import MetroCityBarChart from './components/charts/MetroCityBarChart'
-import MonthlyTrendChart from './components/charts/MonthlyTrendChart'
 import PageHeader from './components/PageHeader/PageHeader'
 import Section from './components/Section/Section'
-import retailFuelPricesCsv from './data/retail-fuel-prices.csv?raw'
 import type { FuelPrice } from './types/fuel'
 import { buildChartContext, parseFuelPeriod } from './utils/buildChartContext'
 import { buildDashboardSummary } from './utils/buildDashboardSummary'
-import { exportDashboardPdf } from './utils/exportDashboardPdf'
-import { normalizeFuelData } from './utils/normalizeFuelData'
+import { loadFuelData } from './utils/normalizeFuelData'
 import './App.css'
 
-function loadFuelData(): FuelPrice[] {
-  const result = Papa.parse<Record<string, string>>(retailFuelPricesCsv, {
-    header: true,
-    skipEmptyLines: true,
-  })
+const MonthlyTrendChart = lazy(
+  () => import('./components/charts/MonthlyTrendChart'),
+)
+const MetroCityBarChart = lazy(
+  () => import('./components/charts/MetroCityBarChart'),
+)
+const FuelTypeDonutChart = lazy(
+  () => import('./components/charts/FuelTypeDonutChart'),
+)
 
-  return normalizeFuelData(result.data)
+function ChartFallback() {
+  return <div className="chart-fallback">Loading chart…</div>
 }
 
 function toTitleCase(value: string): string {
@@ -32,7 +31,10 @@ function toTitleCase(value: string): string {
 }
 
 function App() {
-  const [fuelData] = useState(loadFuelData)
+  const [fuelData, setFuelData] = useState<FuelPrice[]>([])
+  const [dataStatus, setDataStatus] = useState<'loading' | 'ready' | 'error'>(
+    'loading',
+  )
   const [selectedMonth, setSelectedMonth] = useState('')
   const [selectedFuelType, setSelectedFuelType] = useState('')
   const [selectedCity, setSelectedCity] = useState('')
@@ -41,6 +43,30 @@ function App() {
   const monthlyChartRef = useRef<HTMLElement>(null)
   const metroChartRef = useRef<HTMLElement>(null)
   const donutChartRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    let cancelled = false
+
+    loadFuelData()
+      .then((data: FuelPrice[]) => {
+        if (cancelled) return
+        setFuelData(data)
+        setDataStatus('ready')
+      })
+      .catch((error: unknown) => {
+        console.error('Failed to load fuel data:', error)
+        if (cancelled) return
+        setDataStatus('error')
+        toast.error('Data Load Failed', {
+          id: 'fuel-data-load',
+          description: 'Unable to load fuel price data. Please refresh.',
+        })
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   const monthOptions = useMemo(() => {
     const months = new Map<string, { year: number | null; monthIndex: number }>()
@@ -84,6 +110,8 @@ function App() {
     [filteredData],
   )
 
+  const isDataReady = dataStatus === 'ready'
+
   const handleResetFilters = () => {
     setSelectedMonth('')
     setSelectedFuelType('')
@@ -96,7 +124,7 @@ function App() {
   }
 
   const handleExportPdf = async () => {
-    if (isExportingPdf) return
+    if (isExportingPdf || !isDataReady) return
 
     const chartElements = [
       monthlyChartRef.current,
@@ -115,6 +143,8 @@ function App() {
           window.requestAnimationFrame(() => resolve())
         })
       })
+
+      const { exportDashboardPdf } = await import('./utils/exportDashboardPdf')
 
       await exportDashboardPdf({
         filters: {
@@ -176,44 +206,63 @@ function App() {
             onReset={handleResetFilters}
             onExportPdf={handleExportPdf}
             isExportingPdf={isExportingPdf}
+            isDataReady={isDataReady}
           />
         </Section>
 
         <Section title="Key Metrics">
-          <KpiCards filteredData={filteredData} />
+          {dataStatus === 'loading' ? (
+            <div className="dashboard-status">Loading fuel price data…</div>
+          ) : dataStatus === 'error' ? (
+            <div className="dashboard-status dashboard-status-error">
+              Unable to load fuel price data. Please refresh the page.
+            </div>
+          ) : (
+            <KpiCards filteredData={filteredData} />
+          )}
         </Section>
 
-        <Card
-          ref={monthlyChartRef}
-          title="Monthly Retail Selling Price"
-          subtitle={chartContext.periodLabel}
-        >
-          <MonthlyTrendChart filteredData={filteredData} />
-        </Card>
+        {isDataReady ? (
+          <>
+            <Card
+              ref={monthlyChartRef}
+              title="Monthly Retail Selling Price"
+              subtitle={chartContext.periodLabel}
+            >
+              <Suspense fallback={<ChartFallback />}>
+                <MonthlyTrendChart filteredData={filteredData} />
+              </Suspense>
+            </Card>
 
-        <Card
-          ref={metroChartRef}
-          title="Fuel Price by Metro City"
-          subtitle={
-            <div className="flex flex-col gap-0.5">
-              <span>Average Retail Selling Price</span>
-              <span>{chartContext.periodLabel}</span>
-            </div>
-          }
-        >
-          <MetroCityBarChart
-            filteredData={filteredData}
-            chartContext={chartContext}
-          />
-        </Card>
+            <Card
+              ref={metroChartRef}
+              title="Fuel Price by Metro City"
+              subtitle={
+                <div className="flex flex-col gap-0.5">
+                  <span>Average Retail Selling Price</span>
+                  <span>{chartContext.periodLabel}</span>
+                </div>
+              }
+            >
+              <Suspense fallback={<ChartFallback />}>
+                <MetroCityBarChart
+                  filteredData={filteredData}
+                  chartContext={chartContext}
+                />
+              </Suspense>
+            </Card>
 
-        <Card
-          ref={donutChartRef}
-          title="Fuel Type Distribution"
-          subtitle={chartContext.scopeLabel}
-        >
-          <FuelTypeDonutChart filteredData={filteredData} />
-        </Card>
+            <Card
+              ref={donutChartRef}
+              title="Fuel Type Distribution"
+              subtitle={chartContext.scopeLabel}
+            >
+              <Suspense fallback={<ChartFallback />}>
+                <FuelTypeDonutChart filteredData={filteredData} />
+              </Suspense>
+            </Card>
+          </>
+        ) : null}
       </div>
     </main>
   )
