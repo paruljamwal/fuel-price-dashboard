@@ -3,12 +3,15 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "prepare": "husky"
+    "prepare": "node -e \"if (!process.env.CI && !process.env.NETLIFY) require('child_process').execSync('husky', {stdio: 'inherit'})\""
   },
   "dependencies": {
     "papaparse": "^5.5.4",
