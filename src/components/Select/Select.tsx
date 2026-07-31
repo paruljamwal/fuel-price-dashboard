@@ -28,7 +28,7 @@ function Select({
         value={value}
         onChange={(event) => onChange(event.target.value)}
       >
-        <option value="" disabled>
+        <option value="" disabled={value !== ''}>
           {placeholder}
         </option>
         {options.map((option) => (

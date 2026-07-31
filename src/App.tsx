@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import Papa from 'papaparse'
 import Card from './components/Card/Card'
 import FilterBar from './components/FilterBar/FilterBar'
@@ -10,6 +10,8 @@ import PageHeader from './components/PageHeader/PageHeader'
 import Section from './components/Section/Section'
 import retailFuelPricesCsv from './data/retail-fuel-prices.csv?raw'
 import type { FuelPrice } from './types/fuel'
+import { buildDashboardSummary } from './utils/buildDashboardSummary'
+import { exportDashboardPdf } from './utils/exportDashboardPdf'
 import { normalizeFuelData } from './utils/normalizeFuelData'
 import './App.css'
 
@@ -22,11 +24,21 @@ function loadFuelData(): FuelPrice[] {
   return normalizeFuelData(result.data)
 }
 
+function toTitleCase(value: string): string {
+  if (!value) return 'All'
+  return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase()
+}
+
 function App() {
   const [fuelData] = useState(loadFuelData)
   const [selectedMonth, setSelectedMonth] = useState('')
   const [selectedFuelType, setSelectedFuelType] = useState('')
   const [selectedCity, setSelectedCity] = useState('')
+  const [isExportingPdf, setIsExportingPdf] = useState(false)
+
+  const monthlyChartRef = useRef<HTMLElement>(null)
+  const metroChartRef = useRef<HTMLElement>(null)
+  const donutChartRef = useRef<HTMLElement>(null)
 
   const filteredData = useMemo(() => {
     return fuelData.filter((row) => {
@@ -56,6 +68,43 @@ function App() {
     setSelectedCity('')
   }
 
+  const handleExportPdf = async () => {
+    if (isExportingPdf) return
+
+    const chartElements = [
+      monthlyChartRef.current,
+      metroChartRef.current,
+      donutChartRef.current,
+    ].filter((element): element is HTMLElement => element !== null)
+
+    if (chartElements.length === 0) return
+
+    setIsExportingPdf(true)
+
+    try {
+      // Let the button loading state paint before capture starts.
+      await new Promise<void>((resolve) => {
+        window.requestAnimationFrame(() => {
+          window.requestAnimationFrame(() => resolve())
+        })
+      })
+
+      await exportDashboardPdf({
+        filters: {
+          month: toTitleCase(selectedMonth),
+          fuelType: toTitleCase(selectedFuelType),
+          metroCity: toTitleCase(selectedCity),
+        },
+        summary: buildDashboardSummary(filteredData),
+        chartElements,
+      })
+    } catch (error) {
+      console.error('Failed to export dashboard PDF:', error)
+    } finally {
+      setIsExportingPdf(false)
+    }
+  }
+
   return (
     <main className="dashboard">
       <div className="dashboard-container">
@@ -78,6 +127,8 @@ function App() {
             onFuelTypeChange={setSelectedFuelType}
             onCityChange={setSelectedCity}
             onReset={handleResetFilters}
+            onExportPdf={handleExportPdf}
+            isExportingPdf={isExportingPdf}
           />
         </Section>
 
@@ -85,15 +136,15 @@ function App() {
           <KpiCards filteredData={filteredData} />
         </Section>
 
-        <Card title="Monthly Retail Selling Price">
+        <Card ref={monthlyChartRef} title="Monthly Retail Selling Price">
           <MonthlyTrendChart filteredData={filteredData} />
         </Card>
 
-        <Card title="Fuel Price by Metro City">
+        <Card ref={metroChartRef} title="Fuel Price by Metro City">
           <MetroCityBarChart filteredData={filteredData} />
         </Card>
 
-        <Card title="Fuel Type Distribution">
+        <Card ref={donutChartRef} title="Fuel Type Distribution">
           <FuelTypeDonutChart filteredData={filteredData} />
         </Card>
       </div>

@@ -14,6 +14,9 @@
     "prepare": "node -e \"if (!process.env.CI && !process.env.NETLIFY) require('child_process').execSync('husky', {stdio: 'inherit'})\""
   },
   "dependencies": {
+    "jspdf": "^4.2.1",
+    "lucide-react": "^1.28.0",
+    "modern-screenshot": "^4.7.0",
     "papaparse": "^5.5.4",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
