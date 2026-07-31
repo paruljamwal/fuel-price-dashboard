@@ -11,6 +11,7 @@ import PageHeader from './components/PageHeader/PageHeader'
 import Section from './components/Section/Section'
 import retailFuelPricesCsv from './data/retail-fuel-prices.csv?raw'
 import type { FuelPrice } from './types/fuel'
+import { buildChartContext } from './utils/buildChartContext'
 import { buildDashboardSummary } from './utils/buildDashboardSummary'
 import { exportDashboardPdf } from './utils/exportDashboardPdf'
 import { normalizeFuelData } from './utils/normalizeFuelData'
@@ -58,6 +59,11 @@ function App() {
       return matchesMonth && matchesFuelType && matchesCity
     })
   }, [fuelData, selectedMonth, selectedFuelType, selectedCity])
+
+  const chartContext = useMemo(
+    () => buildChartContext(filteredData),
+    [filteredData],
+  )
 
   useEffect(() => {
     console.log(filteredData)
@@ -161,15 +167,35 @@ function App() {
           <KpiCards filteredData={filteredData} />
         </Section>
 
-        <Card ref={monthlyChartRef} title="Monthly Retail Selling Price">
+        <Card
+          ref={monthlyChartRef}
+          title="Monthly Retail Selling Price"
+          subtitle={chartContext.periodLabel}
+        >
           <MonthlyTrendChart filteredData={filteredData} />
         </Card>
 
-        <Card ref={metroChartRef} title="Fuel Price by Metro City">
-          <MetroCityBarChart filteredData={filteredData} />
+        <Card
+          ref={metroChartRef}
+          title="Fuel Price by Metro City"
+          subtitle={
+            <div className="flex flex-col gap-0.5">
+              <span>Average Retail Selling Price</span>
+              <span>{chartContext.periodLabel}</span>
+            </div>
+          }
+        >
+          <MetroCityBarChart
+            filteredData={filteredData}
+            chartContext={chartContext}
+          />
         </Card>
 
-        <Card ref={donutChartRef} title="Fuel Type Distribution">
+        <Card
+          ref={donutChartRef}
+          title="Fuel Type Distribution"
+          subtitle={chartContext.scopeLabel}
+        >
           <FuelTypeDonutChart filteredData={filteredData} />
         </Card>
       </div>

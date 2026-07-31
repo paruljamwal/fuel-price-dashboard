@@ -9,35 +9,24 @@ import {
   YAxis,
 } from 'recharts'
 import type { FuelPrice } from '../../types/fuel'
+import {
+  formatMonthYear,
+  formatShortMonthYear,
+  parseFuelPeriod,
+} from '../../utils/buildChartContext'
 import ChartContainer from './ChartContainer'
 
 type MonthlyTrendPoint = {
   month: string
+  monthFull: string
+  year: number | null
   petrol: number
   diesel: number
+  sortKey: number
 }
 
 type MonthlyTrendChartProps = {
   filteredData: FuelPrice[]
-}
-
-const MONTH_ORDER = [
-  'january',
-  'february',
-  'march',
-  'april',
-  'may',
-  'june',
-  'july',
-  'august',
-  'september',
-  'october',
-  'november',
-  'december',
-]
-
-function getMonthName(month: string): string {
-  return month.split(',')[0]?.trim() ?? month.trim()
 }
 
 function average(values: number[]): number {
@@ -46,18 +35,33 @@ function average(values: number[]): number {
   return Number((total / values.length).toFixed(2))
 }
 
-function buildMonthlyTrendData(data: FuelPrice[]): MonthlyTrendPoint[] {
+function buildMonthlyTrendData(
+  data: FuelPrice[],
+  isSingleYear: boolean,
+): MonthlyTrendPoint[] {
   const groups = new Map<
     string,
-    { label: string; petrol: number[]; diesel: number[] }
+    {
+      monthName: string
+      year: number | null
+      monthIndex: number
+      petrol: number[]
+      diesel: number[]
+    }
   >()
 
   for (const row of data) {
-    const label = getMonthName(row.month)
-    const key = label.toLowerCase()
+    const parsed = parseFuelPeriod(row.month, row.calendarDay)
+    const key = `${parsed.year ?? 'unknown'}-${parsed.monthIndex}`
 
     if (!groups.has(key)) {
-      groups.set(key, { label, petrol: [], diesel: [] })
+      groups.set(key, {
+        monthName: parsed.monthName,
+        year: parsed.year,
+        monthIndex: parsed.monthIndex,
+        petrol: [],
+        diesel: [],
+      })
     }
 
     const group = groups.get(key)!
@@ -73,22 +77,76 @@ function buildMonthlyTrendData(data: FuelPrice[]): MonthlyTrendPoint[] {
   }
 
   return [...groups.values()]
-    .map((group) => ({
-      month: group.label,
-      petrol: average(group.petrol),
-      diesel: average(group.diesel),
-    }))
-    .sort(
-      (a, b) =>
-        MONTH_ORDER.indexOf(a.month.toLowerCase()) -
-        MONTH_ORDER.indexOf(b.month.toLowerCase()),
-    )
+    .map((group) => {
+      const monthFull = formatMonthYear(group.monthName, group.year)
+      const monthLabel = isSingleYear
+        ? group.monthName
+        : formatShortMonthYear(group.monthName, group.year)
+
+      return {
+        month: monthLabel,
+        monthFull,
+        year: group.year,
+        petrol: average(group.petrol),
+        diesel: average(group.diesel),
+        sortKey: (group.year ?? 0) * 12 + Math.max(group.monthIndex, 0),
+      }
+    })
+    .sort((a, b) => a.sortKey - b.sortKey)
+}
+
+function MonthlyTrendTooltip({
+  active,
+  payload,
+}: {
+  active?: boolean
+  payload?: Array<{
+    name?: string
+    value?: number
+    payload?: MonthlyTrendPoint
+    color?: string
+  }>
+}) {
+  if (!active || !payload?.length) return null
+
+  const point = payload[0]?.payload
+  if (!point) return null
+
+  return (
+    <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm shadow-md">
+      <p className="m-0 font-semibold text-slate-900">{point.monthFull}</p>
+      <p className="mt-1 mb-0 text-slate-500">Retail Selling Price</p>
+      <div className="mt-2 flex flex-col gap-1">
+        {payload.map((entry) => (
+          <p
+            key={entry.name}
+            className="m-0 font-medium text-slate-700"
+            style={{ color: entry.color }}
+          >
+            {entry.name}: ₹
+            {typeof entry.value === 'number'
+              ? entry.value.toFixed(2)
+              : entry.value}
+          </p>
+        ))}
+      </div>
+    </div>
+  )
 }
 
 function MonthlyTrendChart({ filteredData }: MonthlyTrendChartProps) {
+  const isSingleYear = useMemo(() => {
+    const values = new Set<number>()
+    for (const row of filteredData) {
+      const { year } = parseFuelPeriod(row.month, row.calendarDay)
+      if (year !== null) values.add(year)
+    }
+    return values.size === 1
+  }, [filteredData])
+
   const chartData = useMemo(
-    () => buildMonthlyTrendData(filteredData),
-    [filteredData],
+    () => buildMonthlyTrendData(filteredData, isSingleYear),
+    [filteredData, isSingleYear],
   )
 
   if (filteredData.length === 0) {
@@ -105,7 +163,7 @@ function MonthlyTrendChart({ filteredData }: MonthlyTrendChartProps) {
         responsive
         data={chartData}
         style={{ width: '100%', height: '100%' }}
-        margin={{ top: 8, right: 16, left: 0, bottom: 8 }}
+        margin={{ top: 36, right: 16, left: 8, bottom: 28 }}
       >
         <CartesianGrid stroke="#E5E4E7" strokeDasharray="3 3" />
         <XAxis
@@ -113,19 +171,27 @@ function MonthlyTrendChart({ filteredData }: MonthlyTrendChartProps) {
           tick={{ fill: '#4B5563', fontSize: 12 }}
           tickLine={false}
           axisLine={{ stroke: '#E5E4E7' }}
+          label={{
+            value: 'Month',
+            position: 'insideBottom',
+            offset: -10,
+            style: { fill: '#4B5563', fontSize: 11 },
+          }}
         />
         <YAxis
           tick={{ fill: '#4B5563', fontSize: 12 }}
           tickLine={false}
           axisLine={{ stroke: '#E5E4E7' }}
-          width={48}
+          width={56}
+          label={{
+            value: 'Retail Selling Price (₹)',
+            angle: -90,
+            position: 'insideLeft',
+            style: { fill: '#4B5563', fontSize: 11, textAnchor: 'middle' },
+          }}
         />
-        <Tooltip
-          formatter={(value) =>
-            typeof value === 'number' ? `₹${value.toFixed(2)}` : value
-          }
-        />
-        <Legend />
+        <Tooltip content={<MonthlyTrendTooltip />} />
+        <Legend verticalAlign="top" height={32} />
         <Line
           type="monotone"
           dataKey="petrol"
